@@ -1,40 +1,51 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(
-    cors({
-        origin: process.env.CLIENT_URL || "http://localhost:5173",
-        credentials: true,
-    })
-);
-
+app.use(cors());
 app.use(express.json());
 
-mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log("MongoDB connected");
-    })
-    .catch((error) => {
-        console.error("MongoDB connection error:", error.message);
-    });
+const projects = [
+    {
+        id: 1,
+        title: "Portfolio Website",
+        description: "A personal portfolio built with React and Express.",
+        tech: ["React", "Express", "CSS"],
+        github: "https://github.com/yourusername/portfolio",
+        demo: "https://your-demo-link.com"
+    },
+    {
+        id: 2,
+        title: "Weather App",
+        description: "A simple weather application using API integration.",
+        tech: ["React", "API", "JavaScript"],
+        github: "https://github.com/yourusername/weather-app",
+        demo: "https://your-weather-demo.com"
+    }
+];
 
 app.get("/", (req, res) => {
-    res.send("Portfolio backend is running");
+    res.send("Portfolio API is running");
 });
 
-app.get("/api/health", (req, res) => {
-    res.json({
-        success: true,
-        message: "Server is healthy",
-    });
+app.get("/projects", (req, res) => {
+    res.json(projects);
+});
+
+app.post("/contact", (req, res) => {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    console.log("Contact form submitted:", { name, email, message });
+
+    res.json({ message: "Message received successfully" });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });

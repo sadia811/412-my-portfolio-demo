@@ -1,233 +1,128 @@
-/*import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-*/
+import { useEffect, useState } from "react";
 import "./index.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
-  const skills = [
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "React",
-    "Node.js",
-    "Express.js",
-    "MongoDB",
-    "Mongoose",
-    "Git",
-    "GitHub",
-    "Vercel",
-    "Render",
-  ];
+  const [projects, setProjects] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
 
-  const projects = [
-    {
-      title: "Portfolio Website",
-      description:
-        "A modern personal portfolio built with React to showcase my skills, projects, and contact information.",
-      tech: ["React", "CSS", "Vite"],
-      live: "https://your-portfolio-link.com",
-      github: "https://github.com/yourusername/portfolio",
-    },
-    {
-      title: "MERN Blog App",
-      description:
-        "A full-stack blog application with authentication, CRUD operations, and MongoDB database integration.",
-      tech: ["MongoDB", "Express", "React", "Node.js"],
-      live: "https://your-blog-link.com",
-      github: "https://github.com/yourusername/mern-blog",
-    },
-    {
-      title: "Task Manager App",
-      description:
-        "A task management app where users can add, update, and delete daily tasks with a clean UI.",
-      tech: ["React", "Node.js", "Express", "MongoDB"],
-      live: "https://your-task-link.com",
-      github: "https://github.com/yourusername/task-manager",
-    },
-  ];
+  useEffect(() => {
+    fetch(`${API_URL}/projects`)
+      .then((res) => res.json())
+      .then((data) => setProjects(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch(`${API_URL}/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+    alert(data.message || data.error);
+
+    if (response.ok) {
+      setFormData({ name: "", email: "", message: "" });
+    }
+  };
 
   return (
-    <div className="app">
-      <header className="navbar">
-        <div className="container nav-content">
-          <h2 className="logo">YourName</h2>
-
-          <nav className="nav-links">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
-          </nav>
+    <div className="container">
+      <nav className="navbar">
+        <h2>My Portfolio</h2>
+        <div>
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
         </div>
-      </header>
+      </nav>
 
-      <section id="home" className="hero">
-        <div className="container hero-content">
-          <div className="hero-text">
-            <p className="intro">Hello, my name is</p>
-            <h1>
-              Md. Your Name
-            </h1>
-            <h2>MERN Stack Developer</h2>
-            <p className="hero-description">
-              I build responsive, modern, and full-stack web applications using
-              MongoDB, Express.js, React, and Node.js.
-            </p>
+      <section className="hero">
+        <h1>Hello, I am Sadia Kabir</h1>
+        <p>CS Student | Web Developer | Problem Solver</p>
+      </section>
 
-            <div className="hero-buttons">
-              <a href="#projects" className="btn btn-primary">
-                View Projects
-              </a>
-              <a href="#contact" className="btn btn-secondary">
-                Contact Me
-              </a>
+      <section id="about">
+        <h2>About Me</h2>
+        <p>
+          I am a computer science student interested in software development and
+          building useful applications.
+        </p>
+      </section>
+
+      <section id="skills">
+        <h2>Skills</h2>
+        <ul className="skills-list">
+          <li>JavaScript</li>
+          <li>React</li>
+          <li>Express</li>
+          <li>Node.js</li>
+          <li>HTML</li>
+          <li>CSS</li>
+        </ul>
+      </section>
+
+      <section id="projects">
+        <h2>Projects</h2>
+        <div className="projects-grid">
+          {projects.map((project) => (
+            <div className="project-card" key={project.id}>
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+              <p><strong>Tech:</strong> {project.tech.join(", ")}</p>
+              <a href={project.github} target="_blank" rel="noreferrer">GitHub</a>
+              {" | "}
+              <a href={project.demo} target="_blank" rel="noreferrer">Live Demo</a>
             </div>
-          </div>
-
-          <div className="hero-card">
-            <div className="profile-box">
-              <div className="profile-circle">YN</div>
-              <h3>Your Name</h3>
-              <p>Frontend + Backend Developer</p>
-              <span>Based in Bangladesh</span>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      <section id="about" className="section">
-        <div className="container">
-          <div className="section-title">
-            <p>Who I Am</p>
-            <h2>About Me</h2>
-          </div>
-
-          <div className="about-grid">
-            <div className="about-card">
-              <h3>My Journey</h3>
-              <p>
-                I am a passionate MERN Stack Developer who enjoys building
-                clean, user-friendly, and scalable web applications. I love
-                turning ideas into real-world digital products.
-              </p>
-            </div>
-
-            <div className="about-card">
-              <h3>What I Do</h3>
-              <p>
-                I create full-stack applications with responsive frontend
-                designs, secure backend APIs, and database integration using
-                MongoDB Atlas.
-              </p>
-            </div>
-
-            <div className="about-card">
-              <h3>My Goal</h3>
-              <p>
-                My goal is to become a professional software engineer and build
-                impactful products that solve real problems for people.
-              </p>
-            </div>
-          </div>
-        </div>
+      <section id="contact">
+        <h2>Contact Me</h2>
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Your name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <textarea
+            name="message"
+            placeholder="Your message"
+            rows="5"
+            value={formData.message}
+            onChange={handleChange}
+          />
+          <button type="submit">Send</button>
+        </form>
       </section>
-
-      <section id="skills" className="section section-dark">
-        <div className="container">
-          <div className="section-title">
-            <p>My Tech Stack</p>
-            <h2>Skills</h2>
-          </div>
-
-          <div className="skills-grid">
-            {skills.map((skill, index) => (
-              <div key={index} className="skill-card">
-                {skill}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="section">
-        <div className="container">
-          <div className="section-title">
-            <p>My Work</p>
-            <h2>Projects</h2>
-          </div>
-
-          <div className="projects-grid">
-            {projects.map((project, index) => (
-              <div key={index} className="project-card">
-                <div className="project-top">
-                  <span className="project-badge">Featured</span>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                </div>
-
-                <div className="project-tech">
-                  {project.tech.map((item, techIndex) => (
-                    <span key={techIndex}>{item}</span>
-                  ))}
-                </div>
-
-                <div className="project-links">
-                  <a href={project.live} target="_blank" rel="noreferrer">
-                    Live Demo
-                  </a>
-                  <a href={project.github} target="_blank" rel="noreferrer">
-                    GitHub
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="section section-dark">
-        <div className="container">
-          <div className="section-title">
-            <p>Get In Touch</p>
-            <h2>Contact Me</h2>
-          </div>
-
-          <div className="contact-box">
-            <p>
-              I am open to internships, freelance work, and developer
-              opportunities. Reach out to me anytime.
-            </p>
-
-            <div className="contact-links">
-              <a href="mailto:yourmail@gmail.com">yourmail@gmail.com</a>
-              <a
-                href="https://github.com/yourusername"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-              <a
-                href="https://linkedin.com/in/yourusername"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="footer">
-        <div className="container">
-          <p>© 2026 Your Name. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }
