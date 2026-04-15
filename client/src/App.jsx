@@ -56,11 +56,7 @@ function App() {
       </nav>
 
       <section className="hero">
-<<<<<<< HEAD
-        <h1>Hello, I am Suraiya Kabir</h1>
-=======
         <h1>Hello, I'm Sadia Kabir</h1>
->>>>>>> fe1c2c8 (mistake rectified)
         <p>CS Student | Web Developer | Problem Solver</p>
       </section>
 
