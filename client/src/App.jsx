@@ -56,7 +56,7 @@ function App() {
       </nav>
 
       <section className="hero">
-        <h1>Hello, I am Sadia Kabir</h1>
+        <h1>Hello, I am Suraiya Kabir</h1>
         <p>CS Student | Web Developer | Problem Solver</p>
       </section>
 
